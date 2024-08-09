@@ -1,0 +1,71 @@
+
+.row {
+    width: 100%;
+    float: left;
+}
+.mb {
+    margin-bottom: 40px;
+}
+
+.footer {
+    background-color: chartreuse;
+    border: 1px black;
+    font-size: 2vw;
+    color:black;
+    border-radius: 5px;
+    padding: 20px;
+}
+
+body {
+    align-items: center;
+    background: linear-gradient(320deg, #eb92eb, #ffef78, #63c9b4);
+    display: flex;
+    justify-content:center;
+}
+.dark-mode {
+    background-color: #222; /* Dark background color */
+    color: #fff; /* Light text color */
+  }
+  
+  .dark-mode #chat-container {
+    background-color: rgba(0, 0, 0, 0.7); /* Adjusted background color for chat container */
+    color: #fff; /* Adjusted text color */
+  }
+  
+  .dark-mode .message {
+    background-color: #444; /* Adjusted background color for messages */
+    color: #fff; /* Adjusted text color for messages */
+  }
+  
+  .dark-mode .user-message {
+    background-color: #0084FF; /* Adjusted background color for user messages */
+  }
+  
+  .dark-mode .bot-message {
+    background-color: #e0f0e0; /* Adjusted background color for bot messages */
+  }
+  
+  .dark-mode .message-info {
+    color: #ccc; /* Adjusted text color for message timestamps */
+  }
+  
+  /* Styles for dark mode button */
+  #dark-mode-toggle {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background-color: #555;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1000; /* Ensure the button is on top of other elements */
+  }
+  
+  /* Adjust button styles for dark mode */
+  .dark-mode #dark-mode-toggle {
+    background-color: #aaa;
+    color: #333;
+  }
+  

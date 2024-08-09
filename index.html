@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rubi Chatbot</title>
+  <link rel="icon" type="image/png" href="https://static.wikia.nocookie.net/minecraft/images/a/a9/Ruby.png/revision/latest/scale-to-width/360?cb=20200220012015">
+  <link rel="stylesheet" href="style.css">
+  <link rel="shortcut icon" type="image/x-icon" href="/Users/hendeptrai/Downloads/favicon.ico">
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(320deg, #eb92eb, #ffef78, #63c9b4);
+      flex-direction: column;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    #chat-container {
+      background-color: rgba(255, 255, 255, 0.30);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 800px;
+      height: 90vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-sizing: border-box;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 5px;
+    }
+
+    .chat-description {
+      text-align: center;
+      margin-bottom: 5px;
+      color: #777;
+      font-size: 14px;
+    }
+
+    .chat-image {
+      display: block;
+      margin: 0 auto 10px auto;
+      max-width: 100px;
+      opacity: 0.8;
+    }
+    #chat-history {
+      flex-grow: 1;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 10px;
+      box-sizing: border-box;
+      height: 70vh;
+    }
+
+    .message {
+      display: flex;
+      margin-bottom: 20px;
+      max-width: 90%;
+      word-wrap: break-word;
+      position: relative;
+      opacity: 0; /* Initially hidden */
+      animation: fadeIn 0.5s forwards; /* Animation to fade in */
+    }
+
+    .user-message {
+      justify-content: flex-end;
+      align-self: flex-end;
+      padding: 10px;
+      background-color: #0084FF;
+      color: white;
+      border-radius: 20px;
+      margin-left: auto;
+      max-width: fit-content;
+      word-break: break-word;
+      display: flex;
+      flex-direction: row-reverse; /* Ensure the avatar is on the right */
+    }
+
+    .bot-message {
+      justify-content: flex-start;
+      align-self: flex-start;
+      padding: 10px;
+      background-color: #e0f0e0;
+      border-radius: 20px;
+      margin-right: auto;
+      max-width: 75%;
+      display: flex;
+      word-break: break-word;
+    }
+
+    .user-message .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-left: 10px; /* Add margin to the left instead of right */
+      margin-right: 0; /* Remove right margin */
+    }
+
+    .bot-message .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    .message-info {
+      font-size: 12px;
+      color: #777;
+      margin-left: 10px;
+      align-self: flex-end;
+      display: flex;
+      align-items: center;
+      position: absolute;
+      bottom: -15px;
+      left: 0;
+    }
+
+    form {
+      display: flex;
+      margin-top: 10px;
+    }
+
+    textarea {
+      flex-grow: 1;
+      margin-right: 10px;
+      padding: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.30);
+      border-radius: 5px;
+      box-sizing: border-box;
+      resize: none; /* Disable resizing */
+      height: 50px; /* Set a default height */
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    button:disabled {
+      background-color: #aaa;
+      cursor: not-allowed;
+    }
+
+    #loader {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 20px;
+      color: #777;
+    }
+
+    .facebook-icon {
+      display: inline-block;
+      margin-top: 10px;
+    }
+
+    .facebook-icon img {
+      width: 32px;
+      height: 32px;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .report-problem-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 1000;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Added transition */
+    }
+
+    .report-problem-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 600px) {
+      #chat-container {
+        width: 100%;
+        height: 75vh;
+        padding: 15px;
+      }
+
+      textarea {
+        margin-right: 5px;
+        padding: 8px;
+      }
+
+      button {
+        padding: 8px 12px;
+      }
+
+      .message {
+        max-width: 100%;
+      }
+
+      .user-message,
+      .bot-message {
+        padding: 8px;
+        border-radius: 10px;
+      }
+
+      .report-problem-button {
+        padding: 8px 12px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      #chat-container {
+        height: 65vh;
+      }
+
+      textarea {
+        margin-right: 5px;
+        padding: 6px;
+      }
+
+      button {
+        padding: 6px 10px;
+      }
+
+      .message {
+        max-width: 100%;
+      }
+
+      .user-message,
+      .bot-message {
+        padding: 6px;
+        border-radius: 10px;
+      }
+
+      .report-problem-button {
+        padding: 6px 10px;
+      }
+    }
+
+    .dictionary-button {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background-color: #ffffff;
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      text-decoration: none;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .dictionary-button img {
+      width: 60px; /* Adjust the width as needed */
+      height: auto; /* Maintain aspect ratio */
+    }
+
+    .dictionary-button:hover {
+      transform: scale(1.1);
+    }
+  </style>
+</head>
+<body>
+  <div id="chat-container">
+    <img src="https://lh3.bunny.novaskin.me/LC5SZbkLiHu26eS8dUfuyR0_Z16nePMRWYFgozXE6kb7RXaqdNJ69DHaFdzZe8hW6A2iaQDYGrKuFXS3jhPt=rw-h400" alt="Chatbot" class="chat-image">
+    <h1>Rubi Chatbot</h1>
+    <p class="chat-description">A custom-developed bot for English learners</p>
+    <div id="chat-history"></div>
+    <form id="chat-form">
+      <textarea id="user-input" placeholder="Ask anything!"></textarea>
+      <button type="submit" disabled>Send</button>
+    </form>
+  </div>
+  <div id="loader">
+    <img src="loader.gif" width="150px"
+
+ alt="Loading...">
+  </div>
+  <footer>
+    For scientific research purposes only
+  </footer>
+  <a href="mailto:kimhoangn57@gmail.com?subject=Problem Report" class="report-problem-button">Report a problem</a>
+  <a href="https://www.oxfordlearnersdictionaries.com" target="_blank" class="dictionary-button">
+    <img src="https://play-lh.googleusercontent.com/rOcfgRhSpcAt1iIHj2xSVk7hXOeN5V5bTeLahPEXVtD4Oxp2xivs8kYlqujDJT3YrQ" alt="Dictionary">
+  </a>
+  <script>
+    const chatHistory = document.getElementById('chat-history');
+    const userInput = document.getElementById('user-input');
+    const form = document.getElementById('chat-form');
+    const sendButton = form.querySelector('button');
+    const userAvatarUrl = 'https://w7.pngwing.com/pngs/873/489/png-transparent-avatar-youtube-cat-cute-dog-heroes-cat-like-mammal-carnivoran-thumbnail.png'; // Replace with the actual user avatar URL
+
+    async function sendMessage() {
+      const userMessage = userInput.value.trim();
+      userInput.value = ''; // Clear input field
+      sendButton.disabled = true; // Disable send button
+
+      // console.log(userMessage);
+
+      try {
+        const response = await fetch('/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userInput: userMessage }),
+        });
+
+        const data = await response.json();
+        // console.log(data);
+        const botMessage = data.response;
+        // console.log(botMessage);
+
+        // Get current timestamp
+        const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        // Add user message to the chat history
+        chatHistory.innerHTML += `
+          <div class="message user-message">
+            <img class="avatar" src="${userAvatarUrl}" alt="User Avatar">
+            <div>${userMessage}</div>
+            <span class="message-info">${timestamp}</span>
+          </div>
+        `;
+
+        // Add bot response to the chat history
+        chatHistory.innerHTML += `
+          <div class="message bot-message">
+            <img class="avatar" src="https://lh3.bunny.novaskin.me/LC5SZbkLiHu26eS8dUfuyR0_Z16nePMRWYFgozXE6kb7RXaqdNJ69DHaFdzZe8hW6A2iaQDYGrKuFXS3jhPt=rw-h400" alt="Avatar">
+            ${botMessage}
+            <span class="message-info">${timestamp}</span>
+          </div>
+        `;
+
+        // Scroll to the bottom of the chat history
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+      } catch (error) {
+        // console.error('Error:', error);
+        // Handle errors gracefully, e.g., display an error message to the user
+      }
+    }
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault(); // Prevent form submission
+      const loader = document.getElementById('loader');
+      loader.style.display = 'block'; // Show the loader
+      sendMessage().finally(() => {
+        loader.style.display = 'none'; // Hide the loader after the message is sent
+      });
+    });
+
+    form.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        form.dispatchEvent(new Event('submit')); // Trigger the submit event
+      }
+    });
+
+    userInput.addEventListener('input', function () {
+      sendButton.disabled = userInput.value.trim() === '';
+    });
+  </script>
+</body>
+</html>
